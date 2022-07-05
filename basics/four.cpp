@@ -1,6 +1,7 @@
 #include<iostream>
 #include<thread>
 #include<chrono>
+#include<string>
 
 static bool lock = true;
 
@@ -29,6 +30,15 @@ void greet(int time)
 
 }
 
+void print(std::string str){
+    using namespace std::literals::chrono_literals;
+    
+    for(int i = 0; i<5; i+=1){
+        std::cout<<str[0]<<str[1]<<str[2]<<std::endl;
+//        std::this_thread::sleep_for(50ms);
+    }
+}
+
 int main()
 {
 //    std::thread worker(do_work);
@@ -38,10 +48,14 @@ int main()
 //
 //    if(getter.joinable()){getter.join();}
 //    if(worker.joinable()){worker.join();}
+//
+//    std::thread one(greet, 1);
+//    std::thread two(greet, 4);
+//    std::thread three(greet, 6);
     
-    std::thread one(greet, 1);
-    std::thread two(greet, 4);
-    std::thread three(greet, 6);
+    std::thread one(print, "abc");
+    std::thread two(print, "def");
+    std::thread three(print, "xyz");
     
     one.join();
     two.join();
