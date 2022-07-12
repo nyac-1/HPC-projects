@@ -1,29 +1,47 @@
 #include<iostream>
-#include<chrono>
 #include<thread>
+#include<chrono>
 #include<string>
 
-using namespace std;
-using namespace std::literals;
+std::mutex lock;
 
-mutex print_mutex;
 
-void print(string str)
+void task_one()
 {
-    for(int i = 0; i<5; i+=1)
+    using namespace std::literals;
+    
+    std::cout<<"Task one trying to get lock"<<std::endl;
+    lock.lock();
+    std::cout<<"Task one has the lock"<<std::endl;
+    std::this_thread::sleep_for(300ms);
+    std::cout<<"Task one released the lock"<<std::endl;
+    lock.unlock();
+}
+void task_two()
+{
+    using namespace std::literals;
+    
+    std::this_thread::sleep_for(100ms);
+    std::cout<<"Task two trying to get lock"<<std::endl;
+    
+    while(!lock.try_lock())
     {
-//        print_mutex.lock();
-        cout << str[0]<<str[1]<<str[2]<<endl;
-//        print_mutex.unlock();
-        std::this_thread::sleep_for(50ms);
+        std::cout<< "Task two couldn't get the lock"<<std::endl;
+        std::this_thread::sleep_for(10ms);
     }
+    
+    std::cout<<"Task two has the lock"<<std::endl;
+    lock.unlock();
 }
 
 int main()
 {
-    std::thread thread_one(print, "sam");
-    std::thread thread_two(print, "abc");
-    std::thread thread_three(print, "gfj");
     
-    return 0;
+    std::thread one(task_one);
+    std::thread two(task_two);
+    
+    one.join();
+    two.join();
+    
+    std::cin.get();
 }
