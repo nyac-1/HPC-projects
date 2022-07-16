@@ -19,8 +19,11 @@ void write(int i)
 
 void read(int i)
 {
+    using namespace std::literals;
+    
     std::shared_lock<std::shared_mutex> sl(lock);
     std::cout<<"Read thread "<<i<<" with shared lock"<<std::endl;
+    std::this_thread::sleep_for(100ms);
 }
 
 int main()
@@ -32,7 +35,7 @@ int main()
     threads.push_back(std::thread{write, 11});
     
     for(int i = 0; i<10; i+=1)
-        threads.push_back(std::thread{read, i+1});
+        threads.push_back(std::thread{read, i+1000000});
     
     for(auto& t: threads)
         t.join();
